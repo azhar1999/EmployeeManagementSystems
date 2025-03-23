@@ -18,11 +18,13 @@ public class EmployeeInfo
     public Gender Gender { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+    [EmailAddress(ErrorMessage = "Invalid email address format.")]
     public string Email { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 
-    [Required, StringLength(10, MinimumLength = 10, ErrorMessage = "Contact number must be exactly 10 digits")]
+    [Required(ErrorMessage = "Contact Number is required.")]
+    [StringLength(10, MinimumLength = 10, ErrorMessage = "Contact number must be numeric and exactly 10 digits.")]
+    [RegularExpression(@"^\d{10}$", ErrorMessage = "Contact number must be numeric and exactly 10 digits.")]
     public string ContactNumber { get; set; }
 }

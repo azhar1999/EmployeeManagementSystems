@@ -38,7 +38,7 @@
 
 	<div class="form-group mt-2">
 		<label>Contact Number</label>
-		<input asp-for="ContactNumber" class="form-control" required />
+		<input asp-for="ContactNumber" class="form-control" required pattern="\d+" />
 		<span asp-validation-for="ContactNumber" class="text-danger"></span>
 	</div>
 
