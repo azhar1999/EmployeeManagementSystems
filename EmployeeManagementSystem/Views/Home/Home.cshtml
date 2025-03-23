@@ -1,0 +1,124 @@
+﻿@using EmployeeManagementSystem.Models.DTOs
+@model List<EmployeeInfo>
+
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<div class="container mt-3 mb-3">
+    <div>
+        <button type="button" class="btn btn-primary" id="addEmployeeBtn">Add Employee</button>
+    </div>
+
+    <div id="employeeListContainer">
+        <partial name="_EmployeeList" model="@Model"></partial>
+    </div>
+</div>
+
+
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">Add Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBodyContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#addEmployeeBtn").click(function () {
+                $.get("/Home/AddEditEmployee", function (data) {
+                    $("#modalBodyContent").html(data);
+
+                     let today = new Date().toISOString().split('T')[0];
+                     $("#DateOfBirth").attr("max", today);
+                     $("#DateOfBirth").attr("value", today)
+
+                     $.validator.unobtrusive.parse("#employeeForm");
+
+                     $("#employeeModal").modal("show");
+                });
+            });
+
+
+            $(document).on("click", ".edit-btn", function () {
+                var id = $(this).data("id");
+                $.get(`/Home/AddEditEmployee?id=${id}`, function (data) {
+                    $("#modalBodyContent").html(data);
+
+                    let today = new Date().toISOString().split('T')[0];
+                    $("#DateOfBirth").attr("max", today);
+
+                     $.validator.unobtrusive.parse("#employeeForm");
+
+                    $("#employeeModal").modal("show");
+                });
+            });
+
+
+            $(document).on("submit", "#employeeForm", function (event) {
+                    event.preventDefault(); 
+
+                    if (!$(this).valid()) {
+                        return; 
+                    }
+
+                var formData = {
+                    FirstName: $("#FirstName").val(),
+                    LastName: $("#LastName").val(),
+                    Gender: $("#Gender").val(),
+                    DateOfBirth: $("#DateOfBirth").val(),
+                    Email: $("#Email").val(),
+                    ContactNumber: $("#ContactNumber").val(),
+                    Id: $("#Id").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Employee",
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (result) {
+                        $("#employeeListContainer").html(result);
+                        $("#employeeModal").modal("hide");
+                    },
+                    error: function () {
+                        alert("An error occurred.");
+                    }
+                });
+            });
+
+  
+            $(document).on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+
+                if (!confirm("Are you sure you want to delete this employee?")) {
+                    return;
+                }
+
+                $.ajax({
+                    type: "DELETE",
+                    url: `/api/Employee/${id}`,
+                    success: function (result) {
+                        $("#employeeListContainer").html(result);
+                    },
+                    error: function () {
+                        alert("An error occurred.");
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}
+
