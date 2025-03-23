@@ -13,18 +13,6 @@ public class EmployeeController : Controller
         _employeeService = employeeService;
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<EmployeeInfo>> GetAllEmployeeAsync()
-    {
-        return await _employeeService.GetAllEmployeesAsync();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<EmployeeInfo> GetEmployeeByIdAsync(int id)
-    {
-        return await _employeeService.GetEmployeeByIdAsync(id);
-    }
-
     [HttpPost]
     public async Task<IActionResult> AddUpdatemployeeAsync(EmployeeInfo employee)
     {
@@ -49,4 +37,18 @@ public class EmployeeController : Controller
         var employees = await _employeeService.GetAllEmployeesAsync();
         return PartialView("_EmployeeList", employees);
     }
+
+
+    [HttpGet]
+    public async Task<IEnumerable<EmployeeInfo>> GetAllEmployeeAsync()
+    {
+        return await _employeeService.GetAllEmployeesAsync();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<EmployeeInfo> GetEmployeeByIdAsync(int id)
+    {
+        return await _employeeService.GetEmployeeByIdAsync(id);
+    }
+
 }
